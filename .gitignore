@@ -1,0 +1,9 @@
+# vscode-files
+.vscode/
+
+# git-files
+.git/
+
+# pycache
+__pycache__/
+*/__pycache__/
