@@ -1,4 +1,7 @@
+import datetime
+
 from django.db import models
+from django.utils import timezone
 
 
 # Question-Class managing question texts and its publication date
@@ -12,9 +15,15 @@ class Question(models.Model):
     # machine-readable name (simply the name of the variable)
     pub_date = models.DateTimeField('date published')
 
+
     # objects' representation
     def __str__(self):
         return self.question_text
+    
+
+    # defining a simple method
+    def was_published_recently(self):
+        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
 
 
 # Choice-Class managing to a question the choice text and the
