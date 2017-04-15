@@ -13,9 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 
 urlpatterns = [
+    # if 'poll/' appears after the domain name it will include
+    # the 'urls.py'-file inside of the dir 'poll'
+    url(r'^poll/', include('poll.urls')),
+
+    # if 'admin/' appears after the domain name it will handle
+    # the admin panel
     url(r'^admin/', admin.site.urls),
 ]
