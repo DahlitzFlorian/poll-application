@@ -1,34 +1,37 @@
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
+from django.views import generic
 
 from .models import Question
 
 
-# the default method which is calles if nothing else was
-# specified by the url
-def index(request):
-    # fetches the latest questions ordered by the pub_date w/ limit 5
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+# using generic views
+class IndexView(generic.ListView):
+    # ListView uses by default the following template_name if not specified
+    # in templates directory <app_name>/<model_name>_list.html
+    template_name = 'poll/index.html'
 
-    # provides variables in the templates/context
-    context = {'latest_question_list' : latest_question_list}
+    # the automatically generated context variable would be
+    # <model_name>_list -> here specified and overwriten
+    context_object_name = 'latest_question_list'
 
-    return render(request, 'poll/index.html', context)
-
-
-# view for details
-def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    
-    return render(request, 'poll/detail.html', {'question' : question})
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
 
 
-# view results
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
+class DetailView(generic.DetailView):
+    model = Question
 
-    return render(request, 'poll/results.html', {'question' : question})
+    # DetailView uses by default the following template_name if not specified
+    # in templates directory <app_name>/<model_name>_detail.html
+    template_name = 'poll/detail.html'
+
+
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'poll/results.html'
 
 
 # view vote
