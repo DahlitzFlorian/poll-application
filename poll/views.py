@@ -24,7 +24,16 @@ class IndexView(generic.ListView):
         """
         # the filter says that it only returns those w/ the pub_date
         # less or equal to timezone.now() (earlier or now)
-        return Question.objects.filter(
+        questions = Question.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')
+
+        excludes = []
+        for question in questions:
+            if not question.choice_set.all().exists():
+                excludes.append(question.id)
+        
+        return Question.objects.exclude(pk__in=excludes).filter(
             pub_date__lte=timezone.now()
         ).order_by('-pub_date')[:5]
 
